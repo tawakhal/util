@@ -4,10 +4,15 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
 )
 
 type Config map[string]string
+
+const (
+	sep = ","
+)
 
 var AppData Config
 var configFile = "service.conf"
@@ -28,7 +33,30 @@ func (c *Config) GetA(key string, defval []string) []string {
 	if len(v) == 0 {
 		return defval
 	}
-	return strings.Split(v, ",")
+	return strings.Split(v, sep)
+}
+
+func (c *Config) GetInt(key string, defval int) int {
+	val := defval
+	v := c.Get(key, "")
+	if v != "" {
+		val, _ = strconv.Atoi(v)
+	}
+	return val
+}
+
+func (c *Config) GetAInt(key string, defval []int) []int {
+	val := defval
+	v := c.Get(key, "")
+	if v != "" {
+		strArr := strings.Split(v, sep)
+		val = []int{}
+		for _, k := range strArr {
+			kav, _ := strconv.Atoi(k)
+			val = append(val, kav)
+		}
+	}
+	return val
 }
 
 // LoadConfigDefault will generated config file with name service.conf in root folder
