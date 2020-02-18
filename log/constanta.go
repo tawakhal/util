@@ -109,22 +109,6 @@ func (et FormatLog) newFormat(w io.Writer) logkit.Logger {
 // OutputLog is output of log. its to console or file
 type OutputLog int32
 
-// Option is option for logging
-type Option struct {
-	LogLevel Level
-	Format   FormatLog
-	Ouput    OutputLog
-}
-
-// IsEmpty is checking struct option is empty or not
-func (et Option) IsEmpty() bool {
-	var opt Option
-	if et == opt {
-		return true
-	}
-	return false
-}
-
 // List of Format Log
 const (
 	Console OutputLog = 1
@@ -147,6 +131,7 @@ func (et OutputLog) String() string {
 func (et OutputLog) Int32() int32 {
 	return int32(et)
 }
+
 func (et OutputLog) newOutput() io.Writer {
 	const (
 		fileName = "service.log"
