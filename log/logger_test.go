@@ -29,7 +29,6 @@ func TestNewLogger(t *testing.T) {
 }
 
 func TestLogLevel(t *testing.T) {
-	t.Fail()
 	const (
 		msg = "msg"
 	)
