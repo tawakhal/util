@@ -94,14 +94,16 @@ func (et FormatLog) Int32() int32 {
 }
 
 func (et FormatLog) newFormat(w io.Writer) logkit.Logger {
+	var logger logkit.Logger
 	switch et {
 	default:
-		return logkit.NewLogfmtLogger(w)
+		logger = logkit.NewLogfmtLogger(w)
 	case FormatJSON:
-		return logkit.NewJSONLogger(w)
+		logger = logkit.NewJSONLogger(w)
 	case FormatFMT:
-		return logkit.NewLogfmtLogger(w)
+		logger = logkit.NewLogfmtLogger(w)
 	}
+	return logkit.With(logger, "time", logkit.DefaultTimestampUTC, "caller", logkit.DefaultCaller)
 }
 
 // OutputLog is output of log. its to console or file
