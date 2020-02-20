@@ -15,8 +15,3 @@ func (et Option) IsEmpty() bool {
 	}
 	return false
 }
-
-// ConsoleLog is for console log
-type ConsoleLog struct {
-	RequestID int64
-}

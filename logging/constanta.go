@@ -91,7 +91,7 @@ func (et FormatLog) Int32() int32 {
 	return int32(et)
 }
 
-func (et FormatLog) newFormat(w io.Writer) logkit.Logger {
+func (et FormatLog) newFormat(w io.Writer, call int) logkit.Logger {
 	var logger logkit.Logger
 	switch et {
 	default:
@@ -101,7 +101,10 @@ func (et FormatLog) newFormat(w io.Writer) logkit.Logger {
 	case FormatFMT:
 		logger = logkit.NewLogfmtLogger(w)
 	}
-	return logkit.With(logger, "time", logkit.DefaultTimestampUTC, "caller", logkit.DefaultCaller)
+	if call == 0 {
+		call = 5
+	}
+	return logkit.With(logger, "time", logkit.DefaultTimestampUTC, "caller", logkit.Caller(call))
 }
 
 // OutputLog is output of log. its to console or file
