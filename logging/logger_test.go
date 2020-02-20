@@ -29,6 +29,7 @@ func TestNewLogger(t *testing.T) {
 }
 
 func TestLogLevel(t *testing.T) {
+	t.Fail()
 	const (
 		msg = "msg"
 	)
@@ -41,8 +42,8 @@ func TestLogLevel(t *testing.T) {
 
 	logger := NewLogger(opt)
 
-	logger.Info(msg, "ini info log")
-	logger.Debug(msg, "ini debug log")
-	logger.Warn(msg, "ini warning log")
-	logger.Error(msg, "ini Error log")
+	logger.Info("ini info log")
+	logger.Debug("ini debug log")
+	logger.Warn("ini warning log")
+	logger.Error("ini Error log")
 }

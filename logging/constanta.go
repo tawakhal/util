@@ -3,12 +3,10 @@ package logging
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 
 	logkit "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // Level is list of level
@@ -146,17 +144,4 @@ func (et OutputLog) newOutput() io.Writer {
 	case Console:
 		return os.Stderr
 	}
-}
-
-// file set default log to file
-func file(file string) {
-	logFile := &lumberjack.Logger{
-		Filename:  file,
-		MaxSize:   1, // megabytes
-		LocalTime: true,
-		Compress:  true, // disabled by default
-	}
-
-	log.SetOutput(logFile)
-	log.SetFlags(log.LstdFlags)
 }
