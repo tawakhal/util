@@ -2,8 +2,6 @@ package logging
 
 import (
 	"testing"
-
-	"github.com/go-kit/kit/log/level"
 )
 
 func TestIsEmpty(t *testing.T) {
@@ -16,8 +14,22 @@ func TestIsEmpty(t *testing.T) {
 }
 
 func TestNewLogger(t *testing.T) {
-	t.Fail()
+	const (
+		msg = "msg"
+	)
 
+	opt := Option{
+		LogLevel: LevelALL,
+		Format:   FormatFMT,
+		Ouput:    Console,
+	}
+
+	logger := NewLogger(opt)
+	logger.Log("coba", "disini")
+}
+
+func TestLogLevel(t *testing.T) {
+	t.Fail()
 	const (
 		msg = "msg"
 	)
@@ -30,8 +42,8 @@ func TestNewLogger(t *testing.T) {
 
 	logger := NewLogger(opt)
 
-	level.Info(logger).Log(msg, "ini info log")
-	level.Debug(logger).Log(msg, "ini debug log")
-	level.Warn(logger).Log(msg, "ini warning log")
-	level.Error(logger).Log(msg, "ini Error log")
+	logger.Info("ini info log")
+	logger.Debug("ini debug log")
+	logger.Warn("ini warning log")
+	logger.Error("ini Error log")
 }

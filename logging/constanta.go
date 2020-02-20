@@ -3,12 +3,10 @@ package logging
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 
 	logkit "github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
-	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 // Level is list of level
@@ -93,35 +91,24 @@ func (et FormatLog) Int32() int32 {
 	return int32(et)
 }
 
-func (et FormatLog) newFormat(w io.Writer) logkit.Logger {
+func (et FormatLog) newFormat(w io.Writer, call int) logkit.Logger {
+	var logger logkit.Logger
 	switch et {
 	default:
-		return logkit.NewLogfmtLogger(w)
+		logger = logkit.NewLogfmtLogger(w)
 	case FormatJSON:
-		return logkit.NewJSONLogger(w)
+		logger = logkit.NewJSONLogger(w)
 	case FormatFMT:
-		return logkit.NewLogfmtLogger(w)
+		logger = logkit.NewLogfmtLogger(w)
 	}
+	if call == 0 {
+		call = 5
+	}
+	return logkit.With(logger, "time", logkit.DefaultTimestampUTC, "caller", logkit.Caller(call))
 }
 
 // OutputLog is output of log. its to console or file
 type OutputLog int32
-
-// Option is option for logging
-type Option struct {
-	LogLevel Level
-	Format   FormatLog
-	Ouput    OutputLog
-}
-
-// IsEmpty is checking struct option is empty or not
-func (et Option) IsEmpty() bool {
-	var opt Option
-	if et == opt {
-		return true
-	}
-	return false
-}
 
 // List of Format Log
 const (
@@ -145,6 +132,7 @@ func (et OutputLog) String() string {
 func (et OutputLog) Int32() int32 {
 	return int32(et)
 }
+
 func (et OutputLog) newOutput() io.Writer {
 	const (
 		fileName = "service.log"
@@ -159,27 +147,4 @@ func (et OutputLog) newOutput() io.Writer {
 	case Console:
 		return os.Stderr
 	}
-}
-
-// file set default log to file
-func file(file string) {
-	logFile := &lumberjack.Logger{
-		Filename:  file,
-		MaxSize:   1, // megabytes
-		LocalTime: true,
-		Compress:  true, // disabled by default
-	}
-
-	log.SetOutput(logFile)
-	log.SetFlags(log.LstdFlags)
-}
-
-// NewLogger is create logger with option
-func NewLogger(option Option) logkit.Logger {
-	if option.IsEmpty() {
-		log.Fatal("option is empty")
-	}
-	logger := option.LogLevel.newLevel(option.Format.newFormat(option.Ouput.newOutput()))
-	level.Info(logger).Log("range", option.LogLevel, "format", option.Format, "output", option.Ouput)
-	return logger
 }
